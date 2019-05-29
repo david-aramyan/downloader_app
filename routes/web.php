@@ -13,3 +13,4 @@
 
 Route::get('/resources', 'ResourcesController@index')->name('resources');
 Route::get('/resources/add', 'ResourcesController@create')->name('resources.create');
+Route::post('/resources/add', 'ResourcesController@store')->name('resources.store');

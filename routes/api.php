@@ -15,3 +15,4 @@ use Illuminate\Http\Request;
 
 
 Route::post('/resources/add','ResourcesController@store');
+Route::get('/resources','ResourcesController@listing')->name('resources.listing');

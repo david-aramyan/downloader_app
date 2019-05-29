@@ -11,25 +11,46 @@
 
             </tr>
             </thead>
-            <tbody>
-            @if(!empty($resources))
-                @foreach($resources as $resource)
-                    <tr>
-                        <th scope="row">{{ $resource->id }}</th>
-                        <td>
-                            @if($resource->status->name == 'Complete')
-                                <a href="{{ asset('storage/'.$resource->name) }}" download>{{ $resource->url }}
-                                </a>
-                            @else
-                                {{ $resource->url }}
-                            @endif
-                        </td>
-                        <td>{{ $resource->status->name }}</td>
-                    </tr>
-                @endforeach
-            @endif
+            <tbody id="resources">
+
             </tbody>
         </table>
     </div>
+@endsection
+@section('script')
+    <script>
+        $.ajax({
+            url: '{{route('resources.listing')}}',
+            type: "GET",
+
+            success: function (data) {
+                if (data.success == 'true') {
+                   if(data.data.length){
+
+                       $.each(data.data,function (index,value) {
+                           var str = value.url;
+                           if(value.status.name == "Complete"){
+                               var str ='<a href = "{{ asset("storage/") }}/'+value.name+'" download>'+value.url+'</a>'
+                           }
+                           $("#resources").prepend('<tr>' +
+                               '<td>'+ value.id +'</td>' +
+                               '<td>'+ str +'</td>' +
+                               '<td>'+ value.status.name +'</td>' +
+                               '</tr>')
+                       })
+
+                   }else{
+                       $("#resources").prepend('No matching records found')
+                   }
+                }
+
+            },
+            error: function (errors) {
+                $("#resources").prepend('Something wrong!')
+
+            }
+
+        })
+    </script>
 @endsection
 

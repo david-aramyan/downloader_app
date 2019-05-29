@@ -16,9 +16,15 @@ class ResourcesController extends Controller
      */
     public function index()
     {
-        $resources = Resource::orderByDesc('created_at')->get();
-        return view('resources.list', compact('resources'));
+
+        return view('resources.list');
     }
+     public function listing()
+    {
+        $resources = Resource::orderByDesc('created_at')->with('status')->get();
+        return response()->json(['success' => 'true','data'=>$resources]);
+    }
+
 
     /**
      * Show the form for adding resource.
@@ -27,7 +33,9 @@ class ResourcesController extends Controller
      */
     public function create()
     {
+
         return view('resources.create');
+
     }
 
     /**
@@ -38,9 +46,17 @@ class ResourcesController extends Controller
      */
     public function store(ResourceRequest $request)
     {
+
         $resource = Resource::create(['url' => $request->url, 'status_id' => 1]);
         DownloadResource::dispatch($resource);
         return response()->json(['success' => 'true']);
+    }
+    public function add(ResourceRequest $request)
+    {
+
+        $resource = Resource::create(['url' => $request->url, 'status_id' => 1]);
+        DownloadResource::dispatch($resource);
+        return redirect()->back()->with('success','Success');
     }
 
 }
